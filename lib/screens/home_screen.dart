@@ -38,12 +38,32 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _logout() {
-    Navigator.of(context).pushReplacement(
+  Future<void> _logout() async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: const Text('Logout'),
+      content: const Text('Are you sure you want to logout?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(dialogContext).pop(false),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(dialogContext).pop(true),
+          child: const Text('Logout'),
+        ),
+      ],
+    ),
+  );
+
+  if (confirmed == true && mounted) {
+    Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const LoginScreen()),
+      (route) => false,
     );
   }
-
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
